@@ -1,0 +1,43 @@
+name: 'Run Tests'
+description: 'Run tests'
+
+runs:
+  using: "composite"
+
+  steps:
+    - name: Unit Test
+      id: unitTests
+      run: ./gradlew test
+
+    - name: Enable KVM group perms
+      run: |
+        echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+        sudo udevadm control --reload-rules
+        sudo udevadm trigger --name-match=kvm
+
+    - name: run Connected tests
+      id: connectedTests
+      uses: reactivecircus/android-emulator-runner@v2
+      with:
+        api-level: 31
+        target: default
+        arch: x86_64
+        profile: Nexus 6
+        script: ./gradlew connectedCheck
+
+    # Job must have Permissions checks: write for next two steps
+    - name: Starting Unit test reports
+      uses: dorny/test-reporter@v1.9.1
+      if: success() || failure()
+      with:
+        name: Unit Test Reports
+        path: app/build/test-results/testDebugUnitTest/TEST-*.xml
+        reporter: java-junit
+
+    - name: Starting Connected test reports
+      uses: dorny/test-reporter@v1.9.1
+      if: success() || failure()
+      with:
+        name: Connected Test Reports
+        path: app/build/outputs/androidTest-results/connected/debug/TEST-*.xml
+        reporter: java-junit
