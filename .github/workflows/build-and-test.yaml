@@ -32,5 +32,9 @@ jobs:
       - name: Build
         run: ./gradlew build -x test
 
-      - name: Diagnostics
-        uses: ./.github/actions/debug
+#      - name: Diagnostics
+#        uses: ./.github/actions/debug
+
+      - name : "Print out project directory"
+        run : ls -la /home/runner/work/playground/playground/
+        shell: bash
