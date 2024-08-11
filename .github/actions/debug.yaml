@@ -1,0 +1,9 @@
+name: 'debug action'
+description: 'Display information'
+
+runs:
+  using: "composite"
+  steps:
+    - name : "Print out project directory"
+      run : ls -la
+      shell: bash
