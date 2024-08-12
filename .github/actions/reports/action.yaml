@@ -5,10 +5,6 @@ description: 'Gather Test, Lint reports and summarize'
 runs:
   using: "composite"
   steps:
-    - name: Build
-      if: success() || failure()
-      run: ./gradlew build -x test
-
     - name: Check and report lint results
       uses: hidakatsuya/action-report-android-lint@v1.2.0
       with:

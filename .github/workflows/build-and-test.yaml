@@ -14,7 +14,7 @@ jobs:
       checks: write
 
     steps:
-      - name: Setup
+      - name: Checkout code
         uses: actions/checkout@v4.1.7
 
       - name: Setup JDK
@@ -28,6 +28,10 @@ jobs:
         id: setup-gradle
         with:
           gradle-version: 8.7
+
+      - name: Build
+        if: success() || failure()
+        run: ./gradlew build -x test
 
       - name: Run Tests
         uses: ./.github/actions/run-tests
