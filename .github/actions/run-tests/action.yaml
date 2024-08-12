@@ -27,19 +27,3 @@ runs:
         profile: Nexus 6
         script: ./gradlew connectedCheck
 
-    # Job must have Permissions checks: write for next two steps
-    - name: Starting Unit test reports
-      uses: dorny/test-reporter@v1.9.1
-      if: success() || failure()
-      with:
-        name: Unit Test Reports
-        path: app/build/test-results/testDebugUnitTest/TEST-*.xml
-        reporter: java-junit
-
-    - name: Starting Connected test reports
-      uses: dorny/test-reporter@v1.9.1
-      if: success() || failure()
-      with:
-        name: Connected Test Reports
-        path: app/build/outputs/androidTest-results/connected/debug/TEST-*.xml
-        reporter: java-junit

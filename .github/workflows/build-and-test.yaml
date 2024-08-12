@@ -4,8 +4,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-and-test:
-    name: Build and Test
+  build:
+    name: Build App
     runs-on: ubuntu-latest
 
     permissions:
@@ -14,7 +14,7 @@ jobs:
       checks: write
 
     steps:
-      - name: Setup or building
+      - name: Setup
         uses: actions/checkout@v4.1.7
 
       - name: Setup JDK
@@ -29,8 +29,8 @@ jobs:
         with:
           gradle-version: 8.7
 
-      - name: Build
-        run: ./gradlew build -x test
-
       - name: Run Tests
         uses: ./.github/actions/run-tests
+
+      - name: Summarize Reports
+        uses: ./.github/actions/reports

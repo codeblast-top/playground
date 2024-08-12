@@ -1,0 +1,31 @@
+name: 'Gather Reports and Summarize'
+description: 'Gather Test, Lint reports and summarize'
+# Job must have Permissions checks: write for next two steps
+
+runs:
+  using: "composite"
+  steps:
+    - name: Build
+      if: success() || failure()
+      run: ./gradlew build -x test
+
+    - name: Check and report lint results
+      uses: hidakatsuya/action-report-android-lint@v1.2.0
+      with:
+        result-path: 'app/build/reports/lint-results-debug.xml'
+
+    - name: Starting Unit test reports
+      uses: dorny/test-reporter@v1.9.1
+      if: success() || failure()
+      with:
+        name: Unit Test Reports
+        path: app/build/test-results/testDebugUnitTest/TEST-*.xml
+        reporter: java-junit
+
+    - name: Starting Connected test reports
+      uses: dorny/test-reporter@v1.9.1
+      if: success() || failure()
+      with:
+        name: Connected Test Reports
+        path: app/build/outputs/androidTest-results/connected/debug/TEST-*.xml
+        reporter: java-junit
